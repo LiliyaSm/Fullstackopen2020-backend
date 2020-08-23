@@ -10,6 +10,17 @@ app.get("/api/persons", (request, response) => {
     }
 });
 
+app.get("/info", (request, response) => {
+
+    let entries = persons.length;
+    var today = new Date();
+    var date = today.toUTCString();
+
+        response.send(`<p>Phonebook has info for ${entries} people </p> <p>${date}</p>` );
+    
+});
+
+
 
 let persons = [
     {
