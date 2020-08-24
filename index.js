@@ -5,10 +5,16 @@ const app = express();
 
 // for  parsing incoming requests with JSON payloads
 app.use(express.json());
-app.use(morgan("tiny"));
 
-morgan.token("type", function (req, res) {
-    return req.body;
+// app.use(morgan("tiny"));
+app.use(
+    morgan(
+        ":method :url :status :res[content-length] - :response-time ms :person"
+    )
+);
+
+morgan.token("person", function (req, res) {
+    return JSON.stringify(req.body);
 });
 
 let persons = [
