@@ -1,21 +1,29 @@
 const express = require("express");
+const app = express();
+
+// request logger middleware
 const morgan = require("morgan");
 
-const app = express();
+const cors = require("cors");
 
 // for  parsing incoming requests with JSON payloads
 app.use(express.json());
 
+app.use(cors());
+
 // app.use(morgan("tiny"));
+
+// callback function is expected to return a string value
+morgan.token("person", function (req, res) {
+    return JSON.stringify(req.body);
+});
+// format string of predefined tokens
 app.use(
     morgan(
         ":method :url :status :res[content-length] - :response-time ms :person"
     )
 );
 
-morgan.token("person", function (req, res) {
-    return JSON.stringify(req.body);
-});
 
 let persons = [
     {
