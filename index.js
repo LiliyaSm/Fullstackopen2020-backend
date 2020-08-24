@@ -11,6 +11,9 @@ app.use(express.json());
 
 app.use(cors());
 
+// makes express show static content
+app.use(express.static("build"));
+
 // app.use(morgan("tiny"));
 
 // callback function is expected to return a string value
