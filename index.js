@@ -1,8 +1,15 @@
 const express = require("express");
+const morgan = require("morgan");
+
 const app = express();
 
 // for  parsing incoming requests with JSON payloads
 app.use(express.json());
+app.use(morgan("tiny"));
+
+morgan.token("type", function (req, res) {
+    return req.body;
+});
 
 let persons = [
     {
