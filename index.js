@@ -1,5 +1,8 @@
+require("dotenv").config();
+
 const express = require("express");
 const app = express();
+const Person = require("./models/person");
 
 // request logger middleware
 const morgan = require("morgan");
@@ -27,36 +30,36 @@ app.use(
     )
 );
 
-
-let persons = [
-    {
-        name: "Arto Hellas",
-        number: "040-123456",
-        id: 1,
-    },
-    {
-        name: "Ada Lovelace",
-        number: "39-44-5323523",
-        id: 2,
-    },
-    {
-        name: "Dan Abramov",
-        number: "12-43-234345",
-        id: 3,
-    },
-    {
-        name: "Mary Poppendieck",
-        number: "39-23-6423122",
-        id: 4,
-    },
-];
+// let persons = [
+//     {
+//         name: "Arto Hellas",
+//         number: "040-123456",
+//         id: 1,
+//     },
+//     {
+//         name: "Ada Lovelace",
+//         number: "39-44-5323523",
+//         id: 2,
+//     },
+//     {
+//         name: "Dan Abramov",
+//         number: "12-43-234345",
+//         id: 3,
+//     },
+//     {
+//         name: "Mary Poppendieck",
+//         number: "39-23-6423122",
+//         id: 4,
+//     },
+// ];
 
 app.get("/api/persons", (request, response) => {
-    if (persons) {
-        response.json(persons);
-    } else {
-        response.status(404).end();
-    }
+    Person.find({}).then((result) => {
+        response.json(result);
+        result.forEach((person) => {
+            console.log(person);
+        });
+    });
 });
 
 app.get("/info", (request, response) => {
