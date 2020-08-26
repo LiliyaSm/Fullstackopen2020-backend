@@ -30,29 +30,6 @@ app.use(
     )
 );
 
-// let persons = [
-//     {
-//         name: "Arto Hellas",
-//         number: "040-123456",
-//         id: 1,
-//     },
-//     {
-//         name: "Ada Lovelace",
-//         number: "39-44-5323523",
-//         id: 2,
-//     },
-//     {
-//         name: "Dan Abramov",
-//         number: "12-43-234345",
-//         id: 3,
-//     },
-//     {
-//         name: "Mary Poppendieck",
-//         number: "39-23-6423122",
-//         id: 4,
-//     },
-// ];
-
 //get all phonebook entries
 app.get("/api/persons", (request, response) => {
     Person.find({}).then((result) => {
@@ -85,11 +62,23 @@ app.get("/api/persons/:id", (request, response) => {
     }
 });
 
+//delete entry
 app.delete("/api/persons/:id", (request, response) => {
-    const id = Number(request.params.id);
-    persons = persons.filter((person) => person.id !== id);
+    Person.findByIdAndRemove(request.params.id)
+        .then((result) => {
+            console.log(result);
 
-    response.status(204).end();
+            response.status(204).end();
+        })
+        .catch((error) => {
+            console.log(error);
+            return next(error);
+        });
+
+    // const id = Number(request.params.id);
+    // persons = persons.filter((person) => person.id !== id);
+
+    // response.status(204).end();
 });
 
 const generateId = () => {
@@ -98,7 +87,6 @@ const generateId = () => {
 
 // create new entry
 app.post("/api/persons", (request, response) => {
-
     const body = request.body;
 
     if (!body.name || !body.number) {
@@ -113,21 +101,17 @@ app.post("/api/persons", (request, response) => {
     //     });
     // }
 
-    const newPerson = new Person ({
+    const newPerson = new Person({
         name: body.name,
         number: body.number,
-    })
+    });
 
     console.log(newPerson);
 
-
-    // data sent back in the response is formatted 
+    // data sent back in the response is formatted
     newPerson.save().then((savedPerson) => {
         response.json(savedPerson);
     });
-
-    // persons = persons.concat(newPerson);
-    // response.json(newPerson);
 });
 
 const PORT = process.env.PORT || 3001;
