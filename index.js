@@ -40,53 +40,60 @@ app.get("/api/persons", (request, response) => {
     });
 });
 
+// displays number of entries and current date
 app.get("/info", (request, response) => {
-    let entries = persons.length;
-    var today = new Date();
-    var date = today.toUTCString();
-
-    response.send(
-        `<p>Phonebook has info for ${entries} people </p> <p>${date}</p>`
-    );
+    let today = new Date();
+    // let date = today.toUTCString();
+    Person.countDocuments({}).then((result) => {
+        response.send(
+            `<p>Phonebook has info for ${result} people </p> <p>${today}</p>`
+        );
+    });
 });
 
-app.get("/api/persons/:id", (request, response) => {
-    const id = Number(request.params.id);
-    console.log(id);
-    const person = persons.find((person) => person.id === id);
-    console.log(person);
-    if (person) {
-        response.json(person);
-    } else {
-        response.status(404).end();
-    }
+// get single entry
+app.get("/api/persons/:id", (request, response, next) => {
+    Person.findById(request.params.id)
+        .then((person) => {
+            if (person) {
+                response.json(person);
+            } else {
+                response.status(404).end();
+            }
+        })
+        .catch((error) => next(error));
+});
+
+//update entry
+app.put("/api/persons/:id", (request, response, next) => {
+    const body = request.body;
+    const person = {
+        name: body.name,
+        number: body.number,
+    };
+    // event handler will be called with the new modified document instead of the original
+    Person.findByIdAndUpdate(request.params.id, person, { new: true })
+        .then((updatedPerson) => {
+            response.json(updatedPerson);
+        })
+        .catch((error) => next(error));
 });
 
 //delete entry
-app.delete("/api/persons/:id", (request, response) => {
+app.delete("/api/persons/:id", (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
         .then((result) => {
             console.log(result);
-
             response.status(204).end();
         })
         .catch((error) => {
             console.log(error);
             return next(error);
         });
-
-    // const id = Number(request.params.id);
-    // persons = persons.filter((person) => person.id !== id);
-
-    // response.status(204).end();
 });
 
-const generateId = () => {
-    return Math.floor(Math.random() * Math.floor(100000));
-};
-
 // create new entry
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
     const body = request.body;
 
     if (!body.name || !body.number) {
