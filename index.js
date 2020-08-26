@@ -53,6 +53,7 @@ app.use(
 //     },
 // ];
 
+//get all phonebook entries
 app.get("/api/persons", (request, response) => {
     Person.find({}).then((result) => {
         response.json(result);
@@ -97,6 +98,7 @@ const generateId = () => {
 
 // create new entry
 app.post("/api/persons", (request, response) => {
+
     const body = request.body;
 
     if (!body.name || !body.number) {
@@ -105,21 +107,27 @@ app.post("/api/persons", (request, response) => {
         });
     }
 
-    if (persons.some((person) => person.name === body.name)) {
-        return response.status(400).json({
-            error: "Name must be unique",
-        });
-    }
+    // if (persons.some((person) => person.name === body.name)) {
+    //     return response.status(400).json({
+    //         error: "Name must be unique",
+    //     });
+    // }
 
-    const newPerson = {
+    const newPerson = new Person ({
         name: body.name,
         number: body.number,
-        id: generateId(),
-    };
-    console.log(newPerson);
-    persons = persons.concat(newPerson);
+    })
 
-    response.json(newPerson);
+    console.log(newPerson);
+
+
+    // data sent back in the response is formatted 
+    newPerson.save().then((savedPerson) => {
+        response.json(savedPerson);
+    });
+
+    // persons = persons.concat(newPerson);
+    // response.json(newPerson);
 });
 
 const PORT = process.env.PORT || 3001;
