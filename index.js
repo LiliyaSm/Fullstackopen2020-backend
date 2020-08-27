@@ -74,14 +74,17 @@ app.put("/api/persons/:id", (request, response, next) => {
     };
 
     // event handler will be called with the new modified document instead of the original
+    // A.findByIdAndUpdate(id, update, options, callback)
+    
     Person.findByIdAndUpdate(request.params.id, person, {
-        
         // enable mongoose validators
         runValidators: true,
+        //plugin mongoose-unique-validator requires setting the context option
+        context: "query",
         new: true,
     })
         .then((updatedPerson) => {
-            response.json(updatedPerson);
+            response.json(updatedPerson.toJSON());
         })
         .catch((error) => next(error));
 });
