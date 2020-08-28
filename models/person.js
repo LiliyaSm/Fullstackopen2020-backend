@@ -1,38 +1,38 @@
-const mongoose = require("mongoose");
-const uniqueValidator = require("mongoose-unique-validator");
+const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 
 // fix deprecation warnings
-mongoose.set("useFindAndModify", false);
-mongoose.set("useCreateIndex", true);
+mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI
 
-console.log("connecting to", url);
+console.log('connecting to', url)
 
 mongoose
-    .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then((result) => {
-        console.log("connected to MongoDB");
-    })
-    .catch((error) => {
-        console.log("error connecting to MongoDB:", error.message);
-    });
+  .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('connected to MongoDB')
+  })
+  .catch((error) => {
+    console.log('error connecting to MongoDB:', error.message)
+  })
 
 const personSchema = new mongoose.Schema({
-    name: { type: String, minlength: 3, required: true, unique: true },
-    number: { type: String, minlength: 8, required: true, unique: true },
-});
+  name: { type: String, minlength: 3, required: true, unique: true },
+  number: { type: String, minlength: 8, required: true, unique: true },
+})
 
 // format the objects returned by Mongoose
-personSchema.set("toJSON", {
-    transform: (document, returnedObject) => {
-        //convert object to string for safe
-        returnedObject.id = returnedObject._id.toString();
-        delete returnedObject._id;
-        delete returnedObject.__v;
-    },
-});
+personSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    //convert object to string for safe
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id
+    delete returnedObject.__v
+  },
+})
 
-personSchema.plugin(uniqueValidator);
+personSchema.plugin(uniqueValidator)
 
-module.exports = mongoose.model("Person", personSchema);
+module.exports = mongoose.model('Person', personSchema)
