@@ -1,4 +1,4 @@
-##Phonebook application
+## Phonebook application
 
 Application is hosted on Heroku:
 http://frozen-bayou-48281.herokuapp.com/api/persons
@@ -6,7 +6,8 @@ http://frozen-bayou-48281.herokuapp.com/api/persons
 **Frontend**: React frontend from another part Fullstackopen course: https://github.com/LiliyaSm/Fullstackopen2020/tree/master/part2/phonebook
 **Database**: MongoDB, provider is [MongoDB Atlas.] (https://cloud.mongodb.com)
 
-Api:
+
+## Api:
 
 ### `/info` 
 returns the number of entries in the Phonebook and the time that the request was received
